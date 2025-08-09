@@ -117,3 +117,7 @@ temp/
 
 # Audio cache
 /public/audio-cache
+
+# MCP configuration with API keys
+.cursor/mcp.json
+.mcp.json
