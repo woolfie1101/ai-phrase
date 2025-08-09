@@ -1,0 +1,93 @@
+{
+	"meta": {
+		"generatedAt": "2025-08-08T06:54:49.223Z",
+		"tasksAnalyzed": 10,
+		"totalTasks": 10,
+		"analysisCount": 10,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "프로젝트 초기 설정 및 기본 구조 구축",
+			"complexityScore": 5,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Next.js 프로젝트 생성, TypeScript/ESLint/Tailwind/Shadcn/ui/Supabase 등 라이브러리 설치, 폴더 구조 설계, 환경 변수 및 타입 정의, 기본 레이아웃/컴포넌트 생성 단계를 세분화하세요.",
+			"reasoning": "현대 Next.js 프로젝트의 초기 설정은 공식 문서와 최신 베스트 프랙티스에 따라 비교적 표준화되어 있으며, 각 라이브러리의 설치와 환경 구성, 폴더 구조 설계, 타입 정의 등은 반복적이지만 세부 작업이 많아 분할이 필요합니다. 각 단계별로 오류 검증과 설정 파일 관리가 요구되므로 7개 내외의 세부 작업으로 나누는 것이 적절합니다.[1][2][3][4][5]"
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Supabase 데이터베이스 스키마 설계 및 구현",
+			"complexityScore": 8,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "각 테이블(사용자, 폴더, 파일, 플래시카드, 카드 진행, 스케줄, 연속 학습)별 스키마 설계/생성, 외래키/인덱스 설정, RLS 정책 적용, CRUD 테스트 단계를 세분화하세요.",
+			"reasoning": "다수의 테이블과 관계형 구조, 외래키 및 인덱스, RLS 정책 등 데이터베이스 보안과 무결성까지 요구되어 복잡도가 높습니다. 각 테이블별 설계와 구현, 정책 적용, 테스트까지 분리하면 8개 내외의 세부 작업이 필요합니다."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "Supabase 인증 시스템 구현",
+			"complexityScore": 7,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "이메일/비밀번호 인증 설정, 회원가입/로그인/비밀번호 재설정/로그아웃/프로필 페이지 구현, 인증 컨텍스트 및 미들웨어 분리, 각 기능별 테스트 단계를 세분화하세요.",
+			"reasoning": "인증 시스템은 보안과 사용자 경험 모두 중요하며, 각 인증 플로우(회원가입, 로그인, 비밀번호 재설정, 로그아웃, 인증 보호 미들웨어, 프로필 관리 등)별로 분리 구현이 필요합니다. 인증 상태 관리와 테스트까지 포함하면 7개 내외의 세부 작업이 적합합니다."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "폴더 및 파일 관리 시스템 구현",
+			"complexityScore": 8,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "폴더/파일 목록 컴포넌트, 생성/수정/삭제 기능, 계층 구조 지원, 드래그 앤 드롭 이동, API 엔드포인트 구현, 탐색기 UI, 접근 권한 테스트 등으로 세분화하세요.",
+			"reasoning": "폴더/파일 관리 시스템은 CRUD, 계층 구조, 드래그 앤 드롭, API 설계, UI 구현, 권한 관리 등 다양한 기능이 복합적으로 요구되어 복잡도가 높습니다. 각 기능별로 분리하면 8개 내외의 세부 작업이 필요합니다."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Anki 학습 로직 구현",
+			"complexityScore": 9,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "SM-2 알고리즘 구현, 카드 상태 관리, 복습 간격 계산, 사용자 응답 처리, 카드 큐 관리, 진행 상태 업데이트, 장기 테스트 시뮬레이션 등으로 세분화하세요.",
+			"reasoning": "간격 반복 알고리즘(SM-2) 구현은 수학적 로직, 상태 관리, 큐 관리, 사용자 입력 처리, 장기적 안정성 검증 등 고난도 작업이 포함됩니다. 각 핵심 기능별로 분리하면 7개 내외의 세부 작업이 적합합니다."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "플래시카드 학습 화면 구현",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "플래시카드 컴포넌트, 앞/뒷면 전환 애니메이션, 응답 버튼, 진행 상태 표시, 학습 방법 옵션, 세션 관리 로직 등으로 세분화하세요.",
+			"reasoning": "플래시카드 UI/UX, 상태 관리, 다양한 학습 옵션, 세션 관리 등 프론트엔드와 로직이 복합적으로 요구되어 중상급 난이도입니다. 각 UI 및 기능별로 분리하면 6개 내외의 세부 작업이 적합합니다."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "TTS(Text-to-Speech) 기능 구현",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "TTS API 연동, 서버 엔드포인트 구현, 언어 자동 감지, 재생 컨트롤 UI, 오디오 캐싱 및 오류 처리 등으로 세분화하세요.",
+			"reasoning": "외부 API 연동, 서버/클라이언트 통신, 언어 감지, 캐싱, UI 구현 등 다양한 기술이 요구되나, 각 단계가 비교적 독립적이므로 5개 내외의 세부 작업으로 분리할 수 있습니다."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "파일 내용 미리보기 및 편집 기능 구현",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "카드 목록 표시, 개별 카드 추가/수정/삭제, 인라인/모달 편집, 카드 순서 변경(드래그 앤 드롭), 대량 카드 추가(CSV/Excel), API 엔드포인트 구현 등으로 세분화하세요.",
+			"reasoning": "카드 CRUD, UI/UX, 대량 데이터 처리, 드래그 앤 드롭 등 다양한 기능이 요구되며, 각 기능별로 분리하면 6개 내외의 세부 작업이 적합합니다."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "유연한 학습 스케줄링 기능 구현",
+			"complexityScore": 8,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "스케줄 설정 UI, 데이터 관리 로직, 우선순위 처리, 오늘의 학습 목록 생성, API 엔드포인트 구현, 다양한 스케줄 조합 테스트 등으로 세분화하세요.",
+			"reasoning": "스케줄링 로직, UI, 우선순위 처리, API, 테스트 등 복합적 기능이 요구되며, 각 단계별로 분리하면 6개 내외의 세부 작업이 적합합니다."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "학습 진도 및 통계 기능 구현",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "연속 학습일 관리, 오늘 할당량/진행률 계산, 통계 UI, 학습 완료 처리, 통계 관련 API 구현 및 동기화 테스트 등으로 세분화하세요.",
+			"reasoning": "진도 추적, 통계 계산, UI, API, 동기화 등 기능이 요구되며, 각 기능별로 분리하면 5개 내외의 세부 작업이 적합합니다."
+		}
+	]
+}

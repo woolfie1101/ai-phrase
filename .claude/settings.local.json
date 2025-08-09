@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__task-master-ai__get_task",
+      "mcp__task-master-ai__set_task_status",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "task-master-ai"
+  ]
+}
