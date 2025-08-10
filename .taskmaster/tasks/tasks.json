@@ -86,7 +86,7 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -94,7 +94,7 @@
             "description": "users, folders, files, flashcards, card_progress, schedules, streaks 등 각 테이블의 컬럼, 타입, 제약조건을 설계합니다.",
             "dependencies": [],
             "details": "ERD 작성, 각 테이블별 필수 컬럼 및 관계 정의, NOT NULL/UNIQUE 등 제약조건 설계",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -105,7 +105,7 @@
               "2.1"
             ],
             "details": "SQL CREATE TABLE 쿼리 작성 및 Supabase SQL Editor에서 실행",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -116,7 +116,7 @@
               "2.2"
             ],
             "details": "FOREIGN KEY, ON DELETE/UPDATE, 주요 컬럼 인덱스 생성",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -127,7 +127,7 @@
               "2.3"
             ],
             "details": "INSERT INTO 쿼리로 users, folders, files 등 각 테이블에 테스트 데이터 입력",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -138,7 +138,7 @@
               "2.4"
             ],
             "details": "각 테이블에 enable_rls, 정책(Policy) 추가, user_id 기반 접근 제한",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -149,7 +149,7 @@
               "2.5"
             ],
             "details": "다른 user_id로 SELECT/UPDATE/DELETE 시도, 권한 오류 발생 확인",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -160,7 +160,7 @@
               "2.6"
             ],
             "details": "INSERT, SELECT, UPDATE, DELETE 쿼리 실행 및 결과 검증",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -171,7 +171,7 @@
               "2.7"
             ],
             "details": "종합 테스트 시나리오 수행, 문제점 발견 시 수정 및 재검증",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -187,8 +187,72 @@
           1,
           2
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Supabase Auth 설정 및 구성",
+            "description": "Supabase 프로젝트에서 이메일/비밀번호 인증을 활성화하고 필요한 설정을 구성합니다.",
+            "dependencies": [],
+            "details": "1. Supabase 대시보드에서 Authentication 설정 활성화\n2. 이메일/비밀번호 인증 방식 활성화\n3. 이메일 템플릿 커스터마이징(회원가입 확인, 비밀번호 재설정)\n4. 리디렉션 URL 설정\n5. 프로젝트에 Supabase Auth 클라이언트 연결 설정",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "회원가입 페이지 구현",
+            "description": "사용자가 새 계정을 생성할 수 있는 회원가입 페이지를 구현합니다.",
+            "dependencies": [],
+            "details": "1. `/auth/signup` 경로에 회원가입 페이지 생성\n2. 이메일, 비밀번호, 비밀번호 확인 입력 필드 구현\n3. 유효성 검사 로직 추가(이메일 형식, 비밀번호 강도, 일치 여부)\n4. 회원가입 제출 처리 및 오류 핸들링\n5. 회원가입 성공 시 로그인 페이지로 리디렉션",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "로그인 페이지 구현",
+            "description": "기존 사용자가 계정에 로그인할 수 있는 로그인 페이지를 구현합니다.",
+            "dependencies": [],
+            "details": "1. `/auth/login` 경로에 로그인 페이지 생성\n2. 이메일, 비밀번호 입력 필드 구현\n3. 로그인 제출 처리 및 오류 핸들링\n4. '비밀번호 찾기' 링크 추가\n5. 로그인 성공 시 대시보드로 리디렉션\n6. 로그인 상태 유지 옵션 구현",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "비밀번호 재설정 기능 구현",
+            "description": "사용자가 비밀번호를 잊어버렸을 때 재설정할 수 있는 기능을 구현합니다.",
+            "dependencies": [],
+            "details": "1. `/auth/forgot-password` 페이지 구현\n2. 이메일 입력 폼 및 제출 처리\n3. 비밀번호 재설정 이메일 발송 로직 구현\n4. `/auth/reset-password` 페이지 구현\n5. 새 비밀번호 입력 및 확인 폼 구현\n6. 비밀번호 재설정 완료 후 로그인 페이지로 리디렉션",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "인증 컨텍스트 및 상태 관리 구현",
+            "description": "애플리케이션 전체에서 사용자 인증 상태를 관리할 수 있는 컨텍스트를 구현합니다.",
+            "dependencies": [],
+            "details": "1. `AuthContext.tsx` 파일 생성\n2. 사용자 인증 상태 관리 로직 구현\n3. 로그인, 로그아웃, 회원가입 함수 구현\n4. 사용자 세션 유지 및 새로고침 처리\n5. 인증 상태 변경 이벤트 리스너 설정\n6. 사용자 프로필 정보 가져오기 함수 구현",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "인증 보호 미들웨어 및 로그아웃 기능 구현",
+            "description": "인증이 필요한 페이지를 보호하는 미들웨어와 로그아웃 기능을 구현합니다.",
+            "dependencies": [],
+            "details": "1. `middleware.ts` 파일 생성\n2. 보호된 경로에 대한 인증 확인 로직 구현\n3. 인증되지 않은 사용자 리디렉션 처리\n4. 로그아웃 기능 구현\n5. 로그아웃 후 세션 정리 및 리디렉션 처리\n6. 공개 경로와 보호된 경로 구분 설정",
+            "status": "done",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "사용자 프로필 페이지 및 통합 테스트",
+            "description": "사용자 프로필 페이지를 구현하고 모든 인증 기능에 대한 통합 테스트를 수행합니다.",
+            "dependencies": [],
+            "details": "1. `/profile` 페이지 구현\n2. 사용자 정보 표시 및 수정 기능 구현\n3. 회원가입 프로세스 테스트\n4. 로그인 프로세스 테스트\n5. 비밀번호 재설정 기능 테스트\n6. 인증 보호 미들웨어 테스트\n7. 로그아웃 기능 테스트\n8. 페이지 새로고침 후 인증 상태 유지 테스트",
+            "status": "done",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 4,
@@ -209,7 +273,7 @@
             "description": "폴더와 파일의 계층 구조를 시각적으로 표시하는 목록 컴포넌트를 설계하고 구현합니다.",
             "dependencies": [],
             "details": "React 기반 트리 구조 UI 컴포넌트 구현, 폴더/파일 아이콘 및 이름 표시, 계층적 데이터 렌더링 지원",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": ""
           },
           {
@@ -537,7 +601,7 @@
     ],
     "metadata": {
       "created": "2025-08-08T06:36:58.857Z",
-      "updated": "2025-08-08T11:28:53.842Z",
+      "updated": "2025-08-09T09:45:10.831Z",
       "description": "Tasks for master context"
     }
   }
