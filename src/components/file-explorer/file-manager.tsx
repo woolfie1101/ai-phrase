@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FileText, FilePlus, MoreHorizontal, Trash2, Edit3, Move, Calendar } from 'lucide-react'
+import { FileText, FilePlus, MoreHorizontal, Trash2, Edit3, Move, Calendar, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -23,6 +23,7 @@ import {
 import { useAuth } from '@/context/auth/auth-context'
 import SchedulePicker from '@/components/scheduling/schedule-picker'
 import { DayOfWeek } from '@/lib/database'
+import { FlashcardEditor } from '@/components/flashcards/flashcard-editor'
 
 interface FlashcardFile {
   id: string
@@ -62,6 +63,8 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedFileForEdit, setSelectedFileForEdit] = useState<FlashcardFile | null>(null)
+  const [flashcardEditorOpen, setFlashcardEditorOpen] = useState(false)
+  const [selectedFileForFlashcards, setSelectedFileForFlashcards] = useState<FlashcardFile | null>(null)
 
   const fetchFiles = async () => {
     if (!selectedFolderId || !user) {
@@ -124,6 +127,11 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
     } catch (error) {
       console.error('Error deleting file:', error)
     }
+  }
+
+  const handleEditFlashcards = (file: FlashcardFile) => {
+    setSelectedFileForFlashcards(file)
+    setFlashcardEditorOpen(true)
   }
 
   const getStudyModeText = (mode: string) => {
@@ -262,6 +270,11 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleEditFlashcards(file)}>
+                        <BookOpen className="w-4 h-4 mr-2" />
+                        플래시카드 편집
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleEditFile(file)}>
                         <Edit3 className="w-4 h-4 mr-2" />
                         파일 수정
@@ -306,6 +319,15 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
             fetchFiles()
             setEditDialogOpen(false)
           }}
+        />
+      )}
+
+      {selectedFileForFlashcards && (
+        <FlashcardEditor
+          fileId={selectedFileForFlashcards.id}
+          fileName={selectedFileForFlashcards.name}
+          open={flashcardEditorOpen}
+          onOpenChange={setFlashcardEditorOpen}
         />
       )}
     </div>
@@ -444,6 +466,7 @@ function EditFileDialog({ open, onOpenChange, file, onSuccess }: EditFileDialogP
         body: JSON.stringify({
           name: name.trim(),
           studyMode,
+          userId: user?.id,
         }),
       })
 
