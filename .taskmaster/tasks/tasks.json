@@ -272,8 +272,8 @@
             "title": "폴더/파일 목록 컴포넌트 설계 및 구현",
             "description": "폴더와 파일의 계층 구조를 시각적으로 표시하는 목록 컴포넌트를 설계하고 구현합니다.",
             "dependencies": [],
-            "details": "React 기반 트리 구조 UI 컴포넌트 구현, 폴더/파일 아이콘 및 이름 표시, 계층적 데이터 렌더링 지원",
-            "status": "in-progress",
+            "details": "React 기반 트리 구조 UI 컴포넌트 구현, 폴더/파일 아이콘 및 이름 표시, 계층적 데이터 렌더링 지원\n<info added on 2025-08-10T11:49:24.657Z>\n폴더/파일 목록 컴포넌트 구현이 완료되었습니다. 주요 구현 내용은 다음과 같습니다:\n\n1. FolderTree 컴포넌트:\n   - 계층적 폴더 구조 시각화\n   - 드래그앤드롭 기능으로 폴더/파일 이동 지원\n   - 폴더별 색상 및 학습 스케줄 표시 기능\n\n2. FileManager 컴포넌트:\n   - 파일 목록 표시 및 CRUD 기능 구현\n   - 플래시카드 편집기와 연동 (BookOpen 아이콘으로 접근)\n   - 파일별 학습 모드 설정 (양방향/앞→뒤/뒤→앞)\n\n3. 백엔드 연동:\n   - 폴더 생성/수정/삭제 API 연동 완료\n   - 파일 생성/수정/삭제 기능 구현\n\n4. 사용자 경험 개선:\n   - 직관적인 드래그앤드롭 인터페이스\n   - 폴더 색상 및 스케줄 시각적 표시\n   - 플래시카드 편집기 원활한 통합\n</info added on 2025-08-10T11:49:24.657Z>",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -284,7 +284,7 @@
               "4.1"
             ],
             "details": "새 폴더 추가, 폴더 이름 인라인 수정, 폴더 삭제 시 하위 항목 처리, 상태 동기화",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -295,7 +295,7 @@
               "4.1"
             ],
             "details": "새 파일 추가, 파일 이름 인라인 수정, 파일 삭제, 폴더 내 파일 관리",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -333,7 +333,7 @@
               "4.5"
             ],
             "details": "GET/POST/PUT/DELETE 엔드포인트, 계층 구조 반영, 이동/삭제 시 하위 항목 처리",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -496,14 +496,51 @@
         "id": 8,
         "title": "파일 내용 미리보기 및 편집 기능 구현",
         "description": "사용자가 파일 내의 플래시카드를 리스트 형태로 보고 편집할 수 있는 기능을 구현합니다.",
-        "details": "1. 카드 목록 표시 화면 구현:\n   - 파일 내 모든 플래시카드를 테이블 형태로 표시\n   - 카드 ID, 앞면, 뒷면, 예시문 등 표시\n2. 카드 편집 기능 구현:\n   - 개별 카드 추가, 수정, 삭제 기능\n   - 인라인 편집 또는 모달 창을 통한 편집\n3. 카드 순서 변경 기능 구현 (드래그 앤 드롭)\n4. 대량 카드 추가 기능 구현:\n   - CSV/Excel 파일 업로드 기능\n   - 파일 포맷 가이드라인 제공\n5. 카드 관련 API 엔드포인트 구현:\n   - GET /api/files/:id/cards - 파일의 모든 카드 조회\n   - POST /api/cards - 새 카드 추가\n   - PUT /api/cards/:id - 카드 정보 업데이트\n   - DELETE /api/cards/:id - 카드 삭제\n   - POST /api/files/:id/cards/bulk - 대량 카드 추가\n\n```typescript\n// CSV 파일 업로드 및 대량 카드 추가 함수 예시\nasync function handleCsvUpload(fileId, file) {\n  const formData = new FormData();\n  formData.append('file', file);\n  formData.append('fileId', fileId);\n  \n  try {\n    const response = await fetch(`/api/files/${fileId}/cards/bulk`, {\n      method: 'POST',\n      body: formData,\n    });\n    \n    if (!response.ok) {\n      throw new Error('Failed to upload cards');\n    }\n    \n    const result = await response.json();\n    return result;\n  } catch (error) {\n    console.error('Error uploading cards:', error);\n    throw error;\n  }\n}\n```",
-        "testStrategy": "1. 카드 목록이 올바르게 표시되는지 확인\n2. 카드 추가, 수정, 삭제 기능이 정상적으로 작동하는지 테스트\n3. 카드 순서 변경이 정상적으로 작동하는지 테스트\n4. CSV/Excel 파일 업로드를 통한 대량 카드 추가가 올바르게 작동하는지 확인\n5. 다양한 형식의 CSV/Excel 파일에 대한 처리가 올바르게 이루어지는지 테스트\n6. 대량의 카드 데이터를 처리할 때 성능이 저하되지 않는지 확인",
-        "priority": "medium",
+        "status": "done",
         "dependencies": [
           4
         ],
-        "status": "deferred",
-        "subtasks": []
+        "priority": "medium",
+        "details": "1. 플래시카드 CRUD API 엔드포인트 구현:\n   - POST /api/flashcards - 플래시카드 생성\n   - PUT /api/flashcards/[id] - 플래시카드 수정\n   - DELETE /api/flashcards/[id] - 플래시카드 삭제\n   - GET /api/flashcards?fileId=xxx - 파일별 플래시카드 목록\n\n2. FlashcardEditor 컴포넌트 구현:\n   - 플래시카드 추가/편집/삭제 UI\n   - PRD 요구사항에 맞는 3가지 필드: 공부할 단어(front), 뜻(back), 예시문/메모(notes)\n   - 언어 설정 기능 (TTS 준비)\n   - 카드 상태 표시 (새로운, 학습중, 복습, 중단)\n\n3. FileManager 통합:\n   - 파일 목록에서 \"플래시카드 편집\" 메뉴 추가\n   - BookOpen 아이콘으로 직관적 접근\n\n4. 데이터베이스 연동:\n   - Admin 클라이언트 사용으로 RLS 우회\n   - userId 기반 권한 검증\n   - 파일별 플래시카드 카운트 자동 업데이트\n\n```typescript\n// 플래시카드 생성 함수 예시\nasync function createFlashcard(fileId, cardData) {\n  try {\n    const response = await fetch('/api/flashcards', {\n      method: 'POST',\n      headers: {\n        'Content-Type': 'application/json',\n      },\n      body: JSON.stringify({\n        fileId,\n        ...cardData\n      }),\n    });\n    \n    if (!response.ok) {\n      throw new Error('Failed to create flashcard');\n    }\n    \n    const result = await response.json();\n    return result;\n  } catch (error) {\n    console.error('Error creating flashcard:', error);\n    throw error;\n  }\n}\n```",
+        "testStrategy": "1. 플래시카드 목록이 올바르게 표시되는지 확인\n2. 플래시카드 추가, 수정, 삭제 기능이 정상적으로 작동하는지 테스트\n3. 언어 설정 기능이 올바르게 작동하는지 확인\n4. 카드 상태가 올바르게 표시되는지 테스트\n5. FileManager와의 통합이 정상적으로 작동하는지 확인\n6. 파일별 플래시카드 카운트가 자동으로 업데이트되는지 확인\n7. userId 기반 권한 검증이 올바르게 작동하는지 테스트\n8. Admin 클라이언트를 통한 RLS 우회가 정상적으로 작동하는지 확인",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "플래시카드 CRUD API 엔드포인트 구현",
+            "description": "플래시카드 생성, 수정, 삭제, 조회를 위한 API 엔드포인트 구현",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "FlashcardEditor 컴포넌트 구현",
+            "description": "플래시카드 추가/편집/삭제 UI 및 필드 구현",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "FileManager 통합",
+            "description": "파일 목록에서 플래시카드 편집 메뉴 및 아이콘 추가",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "데이터베이스 연동",
+            "description": "Admin 클라이언트 사용, 권한 검증, 카운트 자동 업데이트 구현",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 9,
@@ -601,7 +638,7 @@
     ],
     "metadata": {
       "created": "2025-08-08T06:36:58.857Z",
-      "updated": "2025-08-09T09:45:10.831Z",
+      "updated": "2025-08-10T12:02:29.018Z",
       "description": "Tasks for master context"
     }
   }

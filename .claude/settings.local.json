@@ -13,7 +13,14 @@
       "Bash(grep:*)",
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(curl:*)",
+      "Bash(npx supabase db reset:*)",
+      "mcp__task-master-ai__get_tasks",
+      "mcp__task-master-ai__update_subtask",
+      "mcp__task-master-ai__update_task",
+      "Bash(npm run dev:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
