@@ -60,24 +60,6 @@ function FilesPageContent() {
         />
       </div>
 
-      {/* Footer with selected file info */}
-      {selectedFileId && (
-        <div className="bg-white border-t border-gray-200 px-6 py-3">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">
-              선택된 파일: <span className="font-medium">{selectedFileId}</span>
-            </p>
-            <div className="flex space-x-2">
-              <Button size="sm" variant="outline">
-                편집
-              </Button>
-              <Button size="sm">
-                학습 시작
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

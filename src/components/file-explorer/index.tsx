@@ -14,9 +14,11 @@ interface FileExplorerProps {
 
 export function FileExplorer({ onFileSelect, selectedFileId, initialFolderId }: FileExplorerProps) {
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(initialFolderId || null)
+  const [selectedFolder, setSelectedFolder] = useState<any>(null)
 
-  const handleFolderSelect = (folderId: string) => {
+  const handleFolderSelect = (folderId: string, folder?: any) => {
     setSelectedFolderId(folderId)
+    setSelectedFolder(folder)
   }
 
   const handleFileSelect = (fileId: string) => {
@@ -40,6 +42,7 @@ export function FileExplorer({ onFileSelect, selectedFileId, initialFolderId }: 
         <FileManager
           selectedFolderId={selectedFolderId}
           selectedFileId={selectedFileId}
+          selectedFolder={selectedFolder}
           onFileSelect={handleFileSelect}
         />
       </div>

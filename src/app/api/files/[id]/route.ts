@@ -25,6 +25,45 @@ interface RouteParams {
   }
 }
 
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  try {
+    console.log('GET file request started, id:', params.id)
+    
+    const { searchParams } = new URL(request.url)
+    const userId = searchParams.get('userId')
+    
+    console.log('Query userId:', userId)
+
+    if (!userId) {
+      console.log('No userId provided in query parameters')
+      return NextResponse.json({ error: 'Unauthorized', debug: 'No userId provided' }, { status: 401 })
+    }
+
+    console.log('Using admin client for file retrieval operations')
+
+    // Get file information with user validation
+    const { data: file, error: fileError } = await supabaseAdmin
+      .from('flashcard_files')
+      .select('*')
+      .eq('id', params.id)
+      .eq('user_id', userId)
+      .single()
+
+    console.log('File query result:', !!file, fileError)
+
+    if (fileError || !file) {
+      return NextResponse.json({ error: 'File not found or access denied' }, { status: 404 })
+    }
+
+    console.log('File retrieved successfully:', file.name)
+
+    return NextResponse.json(file)
+  } catch (error) {
+    console.error('Error retrieving file:', error)
+    return NextResponse.json({ error: 'Failed to retrieve file' }, { status: 500 })
+  }
+}
+
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     console.log('PUT file request started, id:', params.id)

@@ -265,7 +265,7 @@
           2,
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -307,7 +307,7 @@
               "4.2"
             ],
             "details": "parent_folder_id 기반 트리 구조, 재귀적 렌더링, 중첩 폴더 생성/이동 지원",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -348,7 +348,7 @@
               "4.5"
             ],
             "details": "폴더/파일 트리, 컨텍스트 메뉴, 선택/다중 선택, 반응형 레이아웃, UX 개선",
-            "status": "deferred",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -375,7 +375,7 @@
         "dependencies": [
           2
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -383,7 +383,7 @@
             "description": "카드의 복습 간격을 동적으로 조정하는 SM-2 알고리즘의 수학적 로직을 구현합니다.",
             "dependencies": [],
             "details": "카드의 반복 횟수, 간격, 쉬움 요인(EF) 등을 기반으로 다음 복습 날짜와 간격을 계산하는 함수를 작성합니다. 품질 평가(0~5)에 따라 EF와 반복 횟수, 간격을 업데이트합니다.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -394,7 +394,7 @@
               "5.1"
             ],
             "details": "카드의 학습 상태에 따라 상태를 전환하는 함수와, 상태별로 다른 복습 로직을 적용하는 분기 처리를 구현합니다.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -406,7 +406,7 @@
               "5.2"
             ],
             "details": "카드의 상태와 SM-2 로직에 따라 다음 복습 날짜를 계산하고, 데이터베이스에 저장할 수 있도록 합니다.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -419,7 +419,7 @@
               "5.3"
             ],
             "details": "사용자 입력을 받아 품질 점수로 변환하고, 해당 점수에 따라 카드의 반복 횟수, EF, 간격, 상태를 업데이트합니다.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -432,7 +432,7 @@
               "5.4"
             ],
             "details": "카드의 상태와 복습 일정에 따라 오늘 학습해야 할 카드를 선별하고, 우선순위에 따라 큐를 정렬합니다.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -444,7 +444,7 @@
               "5.5"
             ],
             "details": "카드 학습 완료 시 진행 상태(복습 횟수, 마지막 학습일 등)를 업데이트하고, 데이터베이스에 반영합니다.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -460,7 +460,7 @@
               "5.6"
             ],
             "details": "다양한 카드 상태와 사용자 응답 조합, 장기 반복 학습 상황을 자동화 테스트로 시뮬레이션하여 알고리즘의 버그 및 논리 오류를 검증합니다.",
-            "status": "deferred",
+            "status": "done",
             "testStrategy": ""
           }
         ]
@@ -476,7 +476,7 @@
           4,
           5
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": []
       },
       {
@@ -634,11 +634,26 @@
         ],
         "status": "deferred",
         "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "스페이스드 리피티션 알고리즘 리팩토링: Strategy/Factory 패턴 도입 및 CardServiceV2 제공",
+        "description": "Task 5의 Anki 학습 로직을 Strategy/Factory 패턴으로 리팩토링하고, SM-2와 Leitner 구현체, 자동 마이그레이션, 신규 서비스 API(CardServiceV2), 테스트 및 사용 문서를 포함해 알고리즘을 유연하게 교체/확장 가능하도록 한다.",
+        "details": "아키텍처 개요\n- 목적: 알고리즘 교체 가능성, 개방-폐쇄 원칙(OCP), 테스트 용이성 확보를 위해 Strategy + Factory 패턴 적용[2]. 컨텍스트는 서비스 계층(CardServiceV2)이 담당하며, 알고리즘 선택/주입은 Factory가 단일 책임으로 수행한다[1][2].\n- 핵심 컴포넌트\n  - 추상 전략: SpacedRepetitionStrategy (planNextReview, gradeResponse, migrateFrom 등)\n  - 구체 전략: AnkiSM2Strategy, LeitnerStrategy\n  - 생성기: AlgorithmFactory (싱글톤, 알고리즘 레지스트리/DI 훅 제공)\n  - 서비스: CardServiceV2 (전략 주입 받아 학습/스케줄/통계 연동 지점 제공)\n  - 마이그레이션: AlgorithmMigrationService (전략 간 데이터 변환 규칙 집합)\n\n도메인 및 데이터 모델 변경 제안\n- Card\n  - id, front, back, notes, language, state(new/learning/review/suspended)\n  - scheduling: { dueAt, interval, ease, reps, lapses, stepIndex?, bucket?, lastGrade }\n  - algorithm: { key: 'sm2'|'leitner'|'fsrs'|..., version }\n- UserPreference\n  - srAlgorithmKey, srParams (전략별 파라미터: 초기 ease, steps 등)\n- MigrationAudit\n  - fromKey, toKey, executedAt, counts, previewHash, dryRun\n\nStrategy 패턴 설계\n- interface SpacedRepetitionStrategy {\n    key: string;\n    version: string;\n    planNextReview(card, now): Schedule; // 초기/리뷰 스케줄 산출\n    gradeResponse(card, grade, now): { updatedCard, events };\n    supportsMigrationFrom(fromKey: string): boolean;\n    migrateFrom(card, fromKey): { updatedCard, notes };\n    validateParams(params): void;\n  }\n- AnkiSM2Strategy: SM-2 규칙(초기 ease, interval 증분, lapses 처리) 구현. 파라미터: easeFactorMin, easeDelta, steps.\n- LeitnerStrategy: 레이트너 상자 이동 규칙, 상자별 interval 매핑.\n\nFactory 패턴 설계\n- class AlgorithmFactory {\n    private static instance: AlgorithmFactory;\n    private registry = new Map<string, SpacedRepetitionStrategy>();\n    static getInstance(): AlgorithmFactory { /* 싱글톤 반환 */ }\n    register(strategy: SpacedRepetitionStrategy) { this.registry.set(strategy.key, strategy); }\n    get(key: string): SpacedRepetitionStrategy { /* 없으면 예외 */ }\n    list(): string[] { return [...this.registry.keys()]; }\n  }\n- 앱 부팅 시 register(new AnkiSM2Strategy()), register(new LeitnerStrategy()). 필요 시 DI 컨테이너와 통합.\n\nCardServiceV2 API 설계\n- 기능\n  - POST /api/v2/cards/grade: { cardId, grade, now?, algorithmKey? }\n  - GET /api/v2/algorithms: 사용 가능 알고리즘 목록\n  - POST /api/v2/algorithms/migrate: { fromKey, toKey, scope, dryRun }\n  - PUT /api/v2/user/preferences: { srAlgorithmKey, srParams }\n- 내부 동작\n  - algorithmKey 파라미터가 있으면 Factory로 전략 선택, 없으면 UserPreference의 srAlgorithmKey 사용.\n  - gradeResponse 결과를 영속화하고 통계/스케줄 파이프라인 훅 호출(Task 9/10 연계를 위한 이벤트).\n\n자동 마이그레이션 설계\n- Migration 모드: preview(dry-run), apply(batch), rollback(필요 시 snapshot 기반)\n- 변환 규칙 예:\n  - SM-2 → Leitner: reps/ease/interval 기반으로 bucket 추정, dueAt 재산정\n  - Leitner → SM-2: bucket을 reps/ease로 역매핑하여 초기 interval 재배치\n- 안전장치: 샘플 카드에 대한 시뮬레이션, outlier 검출(극단적 interval/dues), MigrationAudit 기록, 트랜잭션/배치 처리, 재시도 설계\n\n베스트 프랙티스 및 고려사항\n- OCP/SRP를 만족하는 전략 추가 절차 문서화[2].\n- 전략과 영속 모델의 결합 최소화: 변환용 어댑터 계층.\n- 시간 의존성 분리: Clock 인터페이스로 now 주입(테스트 안정화).\n- 결정적 테스트를 위한 순수 함수 경계 설계, side-effect는 리포지토리/이벤트 퍼블리셔로 분리.\n- 동시성: 동일 카드 동시 채점 시 낙관적 락(version)과 idempotency 키 사용.\n- 성능: 대량 마이그레이션은 스트리밍 배치(페이지네이션), 지표 로깅(소요시간/초당 처리량), 장애 시 재개 가능 체크포인트.\n- 관측가능성: 전략 키/버전, 입력/출력 핵심 필드 로깅(PII 제외), 샘플 레벨 트레이싱.\n\n코드 스니펫(의사코드)\n- Factory 사용\n  const factory = AlgorithmFactory.getInstance();\n  const strategy = factory.get(userPref.srAlgorithmKey);\n  const { updatedCard } = strategy.gradeResponse(card, grade, clock.now());\n  await repo.save(updatedCard);\n- 마이그레이션\n  for await (const card of repo.streamByAlgorithm(fromKey)) {\n    const target = factory.get(toKey);\n    if (!target.supportsMigrationFrom(fromKey)) continue;\n    const { updatedCard } = target.migrateFrom(card, fromKey);\n    batch.add(updatedCard);\n    if (batch.size === N) await repo.saveBatch(batch);\n  }\n\n문서화(사용 예시)\n- 사용자가 설정에서 알고리즘 변경 → 즉시/예약 마이그레이션 옵션, dry-run 리포트 확인.\n- 개발자 가이드: 새로운 알고리즘 추가 체크리스트(Strategy 구현, Factory 등록, 파라미터 검증, 마이그레이션 규칙, 테스트 케이스 추가).\n",
+        "testStrategy": "단위 테스트\n- Strategy 공통 계약 테스트: 모든 구현체가 planNextReview/gradeResponse/migrateFrom/validateParams에 대해 동일한 시나리오 스위트를 통과.\n- AnkiSM2Strategy: ease/interval 업데이트 규칙, lapses 처리, steps 적용 경계값 테스트.\n- LeitnerStrategy: 정답/오답에 따른 bucket 이동, bucket→interval 매핑 검증.\n- AlgorithmFactory: 싱글톤 보장, register/get/list 정상 동작 및 미등록 키 예외.\n- Clock 주입으로 시간 의존 로직 결정적 테스트.\n\n통합 테스트\n- CardServiceV2: grade API가 사용자 기본 알고리즘을 사용하고 algorithmKey 오버라이드 시 교체되는지 검증. DB 영속성, 이벤트 발행 훅 확인.\n- 알고리즘 간 마이그레이션: dry-run에서 변환 통계가 일관적인지, apply 후 모든 카드의 algorithm.key가 변경되고 dueAt/interval이 합리적 범위인지.\n- 동시성: 동일 카드에 대해 동시 grade 요청 10개 발생 시 하나만 성공하고 나머지는 재시도/충돌 처리되는지.\n- 대량 배치: 100k 카드 마이그레이션을 페이지네이션/배치 저장으로 완료, 부분 실패시 재개 가능.\n\n계약/회귀 테스트\n- Strategy를 모킹해 UI/스케줄(Task 6/9/10)에 영향을 주는 계약을 스냅샷으로 고정. 새로운 알고리즘 추가 시 회귀 확인.\n\n문서 테스트\n- README/사용 가이드의 예제 코드가 빌드/실행 가능. 알고리즘 변경 플로우 스크린샷/시나리오 점검.\n",
+        "status": "done",
+        "dependencies": [
+          5,
+          6,
+          9
+        ],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-08-08T06:36:58.857Z",
-      "updated": "2025-08-10T12:02:29.018Z",
+      "updated": "2025-08-11T04:14:58.561Z",
       "description": "Tasks for master context"
     }
   }

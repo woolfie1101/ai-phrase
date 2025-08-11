@@ -39,7 +39,7 @@ interface DragItem {
 
 interface FolderTreeProps {
   onFileSelect?: (fileId: string) => void
-  onFolderSelect?: (folderId: string) => void
+  onFolderSelect?: (folderId: string, folder?: any) => void
   selectedFileId?: string
   selectedFolderId?: string
 }
@@ -162,6 +162,7 @@ export function FolderTree({ onFileSelect, onFolderSelect, selectedFileId, selec
             },
             body: JSON.stringify({
               folderId: targetFolderId,
+              userId: user?.id,
             }),
           })
 
@@ -222,7 +223,7 @@ export function FolderTree({ onFileSelect, onFolderSelect, selectedFileId, selec
             ${isOver && canDrop ? 'bg-green-50 border border-green-300' : ''}
           `}
           style={{ paddingLeft: `${level * 20 + 8}px` }}
-          onClick={() => onFolderSelect?.(folder.id)}
+          onClick={() => onFolderSelect?.(folder.id, folder)}
         >
           <div className="flex items-center flex-1 min-w-0">
             <button
@@ -245,11 +246,24 @@ export function FolderTree({ onFileSelect, onFolderSelect, selectedFileId, selec
               )}
             </button>
 
-            <Folder className="w-4 h-4 text-blue-600 mx-2 flex-shrink-0" />
+            <Folder 
+              className="w-4 h-4 mx-2 flex-shrink-0" 
+              style={{ 
+                color: folder.color || '#2563eb' 
+              }} 
+            />
             
             <span className="text-sm truncate" title={folder.name}>
               {folder.name}
             </span>
+
+            {folder.color && (
+              <div 
+                className="w-2 h-2 rounded-full border border-gray-300 ml-2 flex-shrink-0"
+                style={{ backgroundColor: folder.color }}
+                title={`폴더 색상: ${folder.color}`}
+              />
+            )}
 
             {folder.schedule && (() => {
               try {

@@ -56,6 +56,12 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      perspective: {
+        '1000': '1000px',
+      },
+      transitionDuration: {
+        '600': '600ms',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

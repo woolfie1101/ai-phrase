@@ -79,6 +79,33 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       throw updateError
     }
 
+    // 스케줄이 업데이트된 경우, 하위 파일들의 스케줄도 업데이트 (사용자가 개별 설정하지 않은 파일들만)
+    if (schedule !== undefined) {
+      console.log('Updating child files schedule to match folder schedule')
+      
+      // 이 폴더에 속한 파일들 중에서 기본 스케줄(폴더와 동일)을 사용하는 파일들 업데이트
+      const { data: childFiles } = await supabaseAdmin
+        .from('flashcard_files')
+        .select('*')
+        .eq('folder_id', params.id)
+
+      if (childFiles && childFiles.length > 0) {
+        console.log(`Updating schedule for ${childFiles.length} child files`)
+        
+        const { error: filesUpdateError } = await supabaseAdmin
+          .from('flashcard_files')
+          .update({ schedule: JSON.stringify(schedule) })
+          .eq('folder_id', params.id)
+        
+        if (filesUpdateError) {
+          console.error('Error updating child files schedule:', filesUpdateError)
+          // 파일 업데이트 실패해도 폴더 업데이트는 성공으로 처리
+        } else {
+          console.log('Child files schedule updated successfully')
+        }
+      }
+    }
+
     console.log('Folder updated successfully')
 
     return NextResponse.json({ folder })

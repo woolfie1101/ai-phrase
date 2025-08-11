@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FileText, FilePlus, MoreHorizontal, Trash2, Edit3, Move, Calendar, BookOpen } from 'lucide-react'
+import { FileText, FilePlus, MoreHorizontal, Trash2, Edit3, Move, Calendar, BookOpen, Play } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -40,12 +41,14 @@ interface FileManagerProps {
   selectedFolderId: string | null
   selectedFileId?: string
   onFileSelect?: (fileId: string) => void
+  selectedFolder?: any // 선택된 폴더 정보
 }
 
 interface CreateFileDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   folderId: string
+  folderSchedule?: string // 부모 폴더의 스케줄
   onSuccess: () => void
 }
 
@@ -53,11 +56,13 @@ interface EditFileDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   file: FlashcardFile
+  selectedFolder?: any
   onSuccess: () => void
 }
 
-export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: FileManagerProps) {
+export function FileManager({ selectedFolderId, selectedFileId, onFileSelect, selectedFolder }: FileManagerProps) {
   const { user } = useAuth()
+  const router = useRouter()
   const [files, setFiles] = useState<FlashcardFile[]>([])
   const [loading, setLoading] = useState(false)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
@@ -132,6 +137,10 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
   const handleEditFlashcards = (file: FlashcardFile) => {
     setSelectedFileForFlashcards(file)
     setFlashcardEditorOpen(true)
+  }
+
+  const handleStartLearning = (file: FlashcardFile) => {
+    router.push(`/learn/${file.id}`)
   }
 
   const getStudyModeText = (mode: string) => {
@@ -270,11 +279,15 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleStartLearning(file)}>
+                        <Play className="w-4 h-4 mr-2" />
+                        학습 시작
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleEditFlashcards(file)}>
                         <BookOpen className="w-4 h-4 mr-2" />
                         플래시카드 편집
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleEditFile(file)}>
                         <Edit3 className="w-4 h-4 mr-2" />
                         파일 수정
@@ -304,6 +317,7 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
         folderId={selectedFolderId}
+        folderSchedule={selectedFolder?.schedule}
         onSuccess={() => {
           fetchFiles()
           setCreateDialogOpen(false)
@@ -315,6 +329,7 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
           open={editDialogOpen}
           onOpenChange={setEditDialogOpen}
           file={selectedFileForEdit}
+          selectedFolder={selectedFolder}
           onSuccess={() => {
             fetchFiles()
             setEditDialogOpen(false)
@@ -334,11 +349,18 @@ export function FileManager({ selectedFolderId, selectedFileId, onFileSelect }: 
   )
 }
 
-function CreateFileDialog({ open, onOpenChange, folderId, onSuccess }: CreateFileDialogProps) {
+function CreateFileDialog({ open, onOpenChange, folderId, folderSchedule, onSuccess }: CreateFileDialogProps) {
   const { user } = useAuth()
   const [name, setName] = useState('')
   const [studyMode, setStudyMode] = useState<'bidirectional' | 'front-to-back' | 'back-to-front'>('bidirectional')
-  const [schedule, setSchedule] = useState<DayOfWeek[]>([])
+  const [schedule, setSchedule] = useState<DayOfWeek[]>(() => {
+    // 부모 폴더의 스케줄을 기본값으로 설정
+    try {
+      return folderSchedule ? JSON.parse(folderSchedule) : []
+    } catch {
+      return []
+    }
+  })
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -364,7 +386,12 @@ function CreateFileDialog({ open, onOpenChange, folderId, onSuccess }: CreateFil
       if (response.ok) {
         setName('')
         setStudyMode('bidirectional')
-        setSchedule([])
+        // 폴더 스케줄로 리셋
+        try {
+          setSchedule(folderSchedule ? JSON.parse(folderSchedule) : [])
+        } catch {
+          setSchedule([])
+        }
         onSuccess()
       } else {
         console.error('Failed to create file')
@@ -415,12 +442,34 @@ function CreateFileDialog({ open, onOpenChange, folderId, onSuccess }: CreateFil
               </select>
             </div>
 
-            <SchedulePicker
-              value={schedule}
-              onChange={setSchedule}
-              label="학습 스케줄 (선택사항)"
-              disabled={loading}
-            />
+            <div className="space-y-2">
+              <SchedulePicker
+                value={schedule}
+                onChange={setSchedule}
+                label="학습 스케줄"
+                disabled={loading}
+              />
+              {folderSchedule && (() => {
+                try {
+                  const folderScheduleArray = JSON.parse(folderSchedule)
+                  if (folderScheduleArray.length > 0) {
+                    const isUsingFolderSchedule = JSON.stringify(schedule.sort()) === JSON.stringify(folderScheduleArray.sort())
+                    
+                    return (
+                      <p className="text-xs text-blue-600">
+                        {isUsingFolderSchedule 
+                          ? "ℹ️ 폴더의 기본 스케줄을 사용합니다 (수정 가능)"
+                          : "⚙️ 이 파일만의 개별 스케줄을 설정했습니다"
+                        }
+                      </p>
+                    )
+                  }
+                } catch {
+                  return null
+                }
+                return null
+              })()}
+            </div>
           </div>
 
           <DialogFooter className="mt-6">
@@ -442,14 +491,27 @@ function CreateFileDialog({ open, onOpenChange, folderId, onSuccess }: CreateFil
   )
 }
 
-function EditFileDialog({ open, onOpenChange, file, onSuccess }: EditFileDialogProps) {
+function EditFileDialog({ open, onOpenChange, file, selectedFolder, onSuccess }: EditFileDialogProps) {
+  const { user } = useAuth()
   const [name, setName] = useState(file.name)
   const [studyMode, setStudyMode] = useState<'bidirectional' | 'front-to-back' | 'back-to-front'>(file.study_mode)
+  const [schedule, setSchedule] = useState<DayOfWeek[]>(() => {
+    try {
+      return JSON.parse(file.schedule || '[]')
+    } catch {
+      return []
+    }
+  })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setName(file.name)
     setStudyMode(file.study_mode)
+    try {
+      setSchedule(JSON.parse(file.schedule || '[]'))
+    } catch {
+      setSchedule([])
+    }
   }, [file])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -466,6 +528,7 @@ function EditFileDialog({ open, onOpenChange, file, onSuccess }: EditFileDialogP
         body: JSON.stringify({
           name: name.trim(),
           studyMode,
+          schedule,
           userId: user?.id,
         }),
       })
@@ -519,6 +582,41 @@ function EditFileDialog({ open, onOpenChange, file, onSuccess }: EditFileDialogP
                 <option value="front-to-back">앞→뒤만</option>
                 <option value="back-to-front">뒤→앞만</option>
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <SchedulePicker
+                value={schedule}
+                onChange={setSchedule}
+                label="학습 스케줄"
+                disabled={loading}
+              />
+              {selectedFolder?.schedule && (() => {
+                try {
+                  const folderSchedule = JSON.parse(selectedFolder.schedule)
+                  const currentSchedule = schedule
+                  
+                  // 현재 파일 스케줄과 폴더 스케줄이 다른지 확인
+                  const isCustomSchedule = JSON.stringify(currentSchedule.sort()) !== JSON.stringify(folderSchedule.sort())
+                  
+                  if (isCustomSchedule && currentSchedule.length > 0) {
+                    return (
+                      <p className="text-xs text-amber-600">
+                        ⚠️ 이 파일은 폴더와 다른 개별 스케줄을 사용합니다
+                      </p>
+                    )
+                  } else if (folderSchedule.length > 0) {
+                    return (
+                      <p className="text-xs text-green-600">
+                        ℹ️ 폴더의 기본 스케줄을 사용합니다
+                      </p>
+                    )
+                  }
+                } catch {
+                  return null
+                }
+                return null
+              })()}
             </div>
           </div>
 

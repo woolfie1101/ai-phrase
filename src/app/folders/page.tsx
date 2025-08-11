@@ -51,6 +51,8 @@ function FoldersContent() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
   const [editFolderName, setEditFolderName] = useState('')
+  const [editFolderSchedule, setEditFolderSchedule] = useState<DayOfWeek[]>([])
+  const [editFolderColor, setEditFolderColor] = useState('')
   const [isEditing, setIsEditing] = useState(false)
 
   useEffect(() => {
@@ -126,6 +128,18 @@ function FoldersContent() {
   const handleEditFolder = (folder: Folder) => {
     setSelectedFolder(folder)
     setEditFolderName(folder.name)
+    
+    // 기존 스케줄 파싱
+    try {
+      const schedule = folder.schedule ? JSON.parse(folder.schedule) : []
+      setEditFolderSchedule(Array.isArray(schedule) ? schedule : [])
+    } catch {
+      setEditFolderSchedule([])
+    }
+    
+    // 기존 색상 설정
+    setEditFolderColor(folder.color || '')
+    
     setIsEditDialogOpen(true)
   }
 
@@ -141,6 +155,8 @@ function FoldersContent() {
         },
         body: JSON.stringify({
           name: editFolderName.trim(),
+          schedule: editFolderSchedule,
+          color: editFolderColor || null,
           userId: user?.id,
         }),
       })
@@ -154,6 +170,8 @@ function FoldersContent() {
       setIsEditDialogOpen(false)
       setSelectedFolder(null)
       setEditFolderName('')
+      setEditFolderSchedule([])
+      setEditFolderColor('')
     } catch (error) {
       console.error('Error updating folder:', error)
       setError(error instanceof Error ? error.message : '폴더 수정에 실패했습니다.')
@@ -347,8 +365,20 @@ function FoldersContent() {
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-2">
-                      <Folder className="w-5 h-5 text-blue-600" />
+                      <Folder 
+                        className="w-5 h-5" 
+                        style={{ 
+                          color: folder.color || '#2563eb' 
+                        }} 
+                      />
                       <CardTitle className="text-lg truncate">{folder.name}</CardTitle>
+                      {folder.color && (
+                        <div 
+                          className="w-3 h-3 rounded-full border border-gray-300"
+                          style={{ backgroundColor: folder.color }}
+                          title={`폴더 색상: ${folder.color}`}
+                        />
+                      )}
                     </div>
                     <div className="flex space-x-1">
                       <Button 
@@ -372,7 +402,7 @@ function FoldersContent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
                       <FileText className="w-4 h-4 text-gray-400" />
                       <span className="text-sm text-gray-600">
@@ -383,6 +413,36 @@ function FoldersContent() {
                       {new Date(folder.created_at).toLocaleDateString('ko-KR')}
                     </Badge>
                   </div>
+                  
+                  {/* 스케줄 정보 표시 */}
+                  {folder.schedule && (() => {
+                    try {
+                      const schedule = JSON.parse(folder.schedule)
+                      if (Array.isArray(schedule) && schedule.length > 0) {
+                        const dayMap = {
+                          monday: '월',
+                          tuesday: '화', 
+                          wednesday: '수',
+                          thursday: '목',
+                          friday: '금',
+                          saturday: '토',
+                          sunday: '일'
+                        }
+                        const scheduleText = schedule.length === 7 ? '매일' : 
+                          schedule.map(day => dayMap[day as keyof typeof dayMap] || day).join(', ')
+                        
+                        return (
+                          <div className="flex items-center space-x-1 mb-3">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span className="text-xs text-green-700">스케줄: {scheduleText}</span>
+                          </div>
+                        )
+                      }
+                    } catch {
+                      return null
+                    }
+                    return null
+                  })()}
                   <Button 
                     className="w-full mt-4" 
                     variant="outline"
@@ -416,6 +476,43 @@ function FoldersContent() {
                   maxLength={50}
                 />
               </div>
+
+              <SchedulePicker
+                value={editFolderSchedule}
+                onChange={setEditFolderSchedule}
+                label="학습 스케줄 (선택사항)"
+                disabled={isEditing}
+              />
+
+              <div>
+                <Label htmlFor="editFolderColor">색상 (선택사항)</Label>
+                <div className="flex space-x-2 mt-2">
+                  {['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'].map((colorOption) => (
+                    <button
+                      key={colorOption}
+                      type="button"
+                      className={`w-8 h-8 rounded-full border-2 ${
+                        editFolderColor === colorOption ? 'border-gray-400' : 'border-gray-200'
+                      }`}
+                      style={{ backgroundColor: colorOption }}
+                      onClick={() => setEditFolderColor(editFolderColor === colorOption ? '' : colorOption)}
+                      disabled={isEditing}
+                    />
+                  ))}
+                  <button
+                    type="button"
+                    className={`w-8 h-8 rounded-full border-2 ${
+                      editFolderColor === '' ? 'border-gray-400' : 'border-gray-200'
+                    } bg-gray-100 text-xs text-gray-500 flex items-center justify-center`}
+                    onClick={() => setEditFolderColor('')}
+                    disabled={isEditing}
+                    title="색상 없음"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
               {error && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />

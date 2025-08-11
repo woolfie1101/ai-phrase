@@ -20,7 +20,9 @@
       "mcp__task-master-ai__get_tasks",
       "mcp__task-master-ai__update_subtask",
       "mcp__task-master-ai__update_task",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "mcp__task-master-ai__add_task",
+      "mcp__task-master-ai__next_task"
     ]
   },
   "enableAllProjectMcpServers": true,
